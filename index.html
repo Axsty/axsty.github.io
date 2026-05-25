@@ -1,0 +1,484 @@
+<!DOCTYPE html>
+<html lang="sv">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Axel Staaf Friborg — Javautvecklare</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;700;800&family=DM+Mono:ital,wght@0,400;1,400&family=DM+Sans:ital,wght@0,300;0,400;1,300&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --c1: #FF4D6A;
+      --c2: #FFD166;
+      --c3: #06D6A0;
+      --c4: #118AB2;
+      --c5: #7B2FBE;
+      --bg: #0D0D0D;
+      --surface: #161616;
+      --text: #F0EEE6;
+      --muted: #888;
+      --border: rgba(255,255,255,0.08);
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      font-family: 'DM Sans', sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      overflow-x: hidden;
+    }
+
+    /* === NAV === */
+    nav {
+      position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+      display: flex; justify-content: space-between; align-items: center;
+      padding: 1.25rem 2.5rem;
+      border-bottom: 1px solid var(--border);
+      background: rgba(13,13,13,0.85);
+      backdrop-filter: blur(12px);
+    }
+    .nav-logo {
+      font-family: 'Syne', sans-serif;
+      font-weight: 800; font-size: 1.1rem;
+      letter-spacing: -0.02em;
+    }
+    .nav-logo span { color: var(--c1); }
+    nav ul { list-style: none; display: flex; gap: 2rem; }
+    nav a {
+      text-decoration: none; color: var(--muted);
+      font-size: 0.85rem; letter-spacing: 0.05em; text-transform: uppercase;
+      transition: color 0.2s;
+    }
+    nav a:hover { color: var(--text); }
+
+    /* === HERO === */
+    .hero {
+      min-height: 100vh;
+      display: grid;
+      place-items: center;
+      padding: 8rem 2.5rem 4rem;
+      position: relative;
+      overflow: hidden;
+    }
+    .hero-bg {
+      position: absolute; inset: 0; pointer-events: none;
+      background:
+        radial-gradient(ellipse 60% 50% at 20% 60%, rgba(255,77,106,0.12) 0%, transparent 70%),
+        radial-gradient(ellipse 50% 40% at 80% 30%, rgba(6,214,160,0.10) 0%, transparent 70%),
+        radial-gradient(ellipse 40% 50% at 60% 80%, rgba(123,47,190,0.10) 0%, transparent 70%);
+    }
+    .hero-grid {
+      position: absolute; inset: 0; opacity: 0.04;
+      background-image:
+        linear-gradient(var(--text) 1px, transparent 1px),
+        linear-gradient(90deg, var(--text) 1px, transparent 1px);
+      background-size: 60px 60px;
+    }
+    .hero-inner { position: relative; max-width: 900px; width: 100%; }
+    .hero-tag {
+      display: inline-flex; align-items: center; gap: 8px;
+      background: rgba(6,214,160,0.1); border: 1px solid rgba(6,214,160,0.25);
+      color: var(--c3); padding: 6px 14px; border-radius: 100px;
+      font-family: 'DM Mono', monospace; font-size: 0.78rem;
+      margin-bottom: 2rem;
+      animation: fadeUp 0.6s ease both;
+    }
+    .dot { width: 7px; height: 7px; background: var(--c3); border-radius: 50%; animation: pulse 2s infinite; }
+    @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:0.3} }
+
+    h1 {
+      font-family: 'Syne', sans-serif;
+      font-weight: 800; font-size: clamp(3rem, 8vw, 6.5rem);
+      line-height: 0.95; letter-spacing: -0.03em;
+      margin-bottom: 2rem;
+      animation: fadeUp 0.6s 0.1s ease both;
+    }
+    h1 .line-highlight {
+      display: block;
+      background: linear-gradient(135deg, var(--c1), var(--c2));
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+    .hero-desc {
+      font-size: 1.15rem; color: var(--muted); font-weight: 300;
+      max-width: 500px; line-height: 1.7;
+      margin-bottom: 3rem;
+      animation: fadeUp 0.6s 0.2s ease both;
+    }
+    .hero-ctas {
+      display: flex; gap: 1rem; flex-wrap: wrap;
+      animation: fadeUp 0.6s 0.3s ease both;
+    }
+    .btn {
+      display: inline-flex; align-items: center; gap: 8px;
+      padding: 0.85rem 1.75rem; border-radius: 100px;
+      font-size: 0.9rem; font-weight: 400; text-decoration: none;
+      transition: transform 0.2s, box-shadow 0.2s;
+      cursor: pointer; border: none;
+    }
+    .btn:hover { transform: translateY(-2px); }
+    .btn-primary {
+      background: var(--c1); color: #fff;
+      box-shadow: 0 8px 30px rgba(255,77,106,0.3);
+    }
+    .btn-primary:hover { box-shadow: 0 12px 40px rgba(255,77,106,0.45); }
+    .btn-ghost {
+      background: transparent;
+      border: 1px solid var(--border);
+      color: var(--text);
+    }
+    .btn-ghost:hover { border-color: rgba(255,255,255,0.25); background: rgba(255,255,255,0.04); }
+
+    .hero-scroll {
+      position: absolute; bottom: 2.5rem; left: 50%; transform: translateX(-50%);
+      display: flex; flex-direction: column; align-items: center; gap: 8px;
+      color: var(--muted); font-size: 0.75rem; letter-spacing: 0.1em; text-transform: uppercase;
+      animation: fadeUp 0.6s 0.6s ease both;
+    }
+    .scroll-line { width: 1px; height: 40px; background: linear-gradient(var(--muted), transparent); animation: scrollDown 2s ease infinite; }
+    @keyframes scrollDown { 0%{transform:scaleY(0);transform-origin:top} 50%{transform:scaleY(1);transform-origin:top} 51%{transform-origin:bottom} 100%{transform:scaleY(0);transform-origin:bottom} }
+
+    @keyframes fadeUp { from{opacity:0;transform:translateY(24px)} to{opacity:1;transform:translateY(0)} }
+
+    /* === SECTIONS === */
+    section { padding: 6rem 2.5rem; max-width: 1100px; margin: 0 auto; }
+
+    .section-label {
+      font-family: 'DM Mono', monospace; font-size: 0.75rem;
+      color: var(--c2); letter-spacing: 0.15em; text-transform: uppercase;
+      margin-bottom: 1rem;
+    }
+    .section-title {
+      font-family: 'Syne', sans-serif; font-weight: 700;
+      font-size: clamp(2rem, 4vw, 3rem);
+      letter-spacing: -0.02em; margin-bottom: 3rem;
+    }
+    hr.divider { border: none; border-top: 1px solid var(--border); margin: 0; }
+
+    /* === SKILLS === */
+    .skills-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+      gap: 1px;
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      overflow: hidden;
+      background: var(--border);
+    }
+    .skill-card {
+      background: var(--surface);
+      padding: 2rem;
+      transition: background 0.2s;
+    }
+    .skill-card:hover { background: #1e1e1e; }
+    .skill-icon {
+      width: 44px; height: 44px; border-radius: 12px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 1.4rem; margin-bottom: 1.25rem;
+    }
+    .skill-card h3 {
+      font-family: 'Syne', sans-serif; font-weight: 700; font-size: 1rem;
+      margin-bottom: 0.5rem;
+    }
+    .skill-card p { font-size: 0.85rem; color: var(--muted); line-height: 1.6; }
+    .skill-tags { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 1rem; }
+    .tag {
+      font-family: 'DM Mono', monospace; font-size: 0.7rem;
+      padding: 4px 10px; border-radius: 100px;
+      background: rgba(255,255,255,0.06); color: var(--muted);
+      border: 1px solid var(--border);
+    }
+
+    /* === PROJECTS === */
+    .projects-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 1.5rem;
+    }
+    .project-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 2rem;
+      position: relative;
+      overflow: hidden;
+      transition: transform 0.2s, border-color 0.2s;
+      text-decoration: none; color: var(--text);
+      display: block;
+    }
+    .project-card::before {
+      content: '';
+      position: absolute; top: 0; left: 0; right: 0; height: 3px;
+    }
+    .project-card:nth-child(1)::before { background: linear-gradient(90deg, var(--c1), var(--c2)); }
+    .project-card:nth-child(2)::before { background: linear-gradient(90deg, var(--c3), var(--c4)); }
+    .project-card:nth-child(3)::before { background: linear-gradient(90deg, var(--c5), var(--c1)); }
+    .project-card:nth-child(4)::before { background: linear-gradient(90deg, var(--c2), var(--c3)); }
+    .project-card:hover { transform: translateY(-4px); border-color: rgba(255,255,255,0.18); }
+    .project-card h3 {
+      font-family: 'Syne', sans-serif; font-weight: 700;
+      font-size: 1.15rem; margin-bottom: 0.5rem;
+    }
+    .project-card p { font-size: 0.88rem; color: var(--muted); line-height: 1.65; margin-bottom: 1.5rem; }
+    .project-meta {
+      display: flex; justify-content: space-between; align-items: center;
+    }
+    .project-lang {
+      font-family: 'DM Mono', monospace; font-size: 0.72rem;
+      display: flex; align-items: center; gap: 6px; color: var(--muted);
+    }
+    .lang-dot { width: 8px; height: 8px; border-radius: 50%; display: inline-block; }
+    .project-link {
+      font-size: 0.8rem; color: var(--muted); text-decoration: none;
+      display: flex; align-items: center; gap: 4px;
+      transition: color 0.2s;
+    }
+    .project-link:hover { color: var(--text); }
+    .project-link svg { width: 14px; height: 14px; }
+
+    /* === TIMELINE === */
+    .timeline { position: relative; padding-left: 2rem; }
+    .timeline::before {
+      content: '';
+      position: absolute; left: 0; top: 6px; bottom: 0;
+      width: 1px; background: var(--border);
+    }
+    .timeline-item { position: relative; padding-bottom: 2.5rem; }
+    .timeline-item:last-child { padding-bottom: 0; }
+    .timeline-dot {
+      position: absolute; left: -2rem;
+      width: 9px; height: 9px; border-radius: 50%;
+      background: var(--c4); top: 6px;
+      box-shadow: 0 0 0 3px var(--bg), 0 0 0 4px var(--c4);
+    }
+    .timeline-year {
+      font-family: 'DM Mono', monospace; font-size: 0.75rem;
+      color: var(--c4); margin-bottom: 0.3rem;
+    }
+    .timeline-item h3 {
+      font-family: 'Syne', sans-serif; font-weight: 700;
+      font-size: 1.05rem; margin-bottom: 0.25rem;
+    }
+    .timeline-item .place {
+      font-size: 0.82rem; color: var(--muted); margin-bottom: 0.5rem; font-style: italic;
+    }
+    .timeline-item p { font-size: 0.88rem; color: var(--muted); line-height: 1.65; }
+
+    /* === CONTACT === */
+    .contact-box {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 24px;
+      padding: 4rem 3rem;
+      text-align: center;
+      position: relative; overflow: hidden;
+    }
+    .contact-box::before {
+      content: '';
+      position: absolute; inset: 0; pointer-events: none;
+      background: radial-gradient(ellipse 80% 60% at 50% 100%, rgba(255,77,106,0.08), transparent);
+    }
+    .contact-box h2 {
+      font-family: 'Syne', sans-serif; font-weight: 800;
+      font-size: clamp(2rem, 5vw, 3.5rem); letter-spacing: -0.02em;
+      margin-bottom: 1rem;
+    }
+    .contact-box p { color: var(--muted); margin-bottom: 2.5rem; font-size: 1rem; }
+    .social-links { display: flex; justify-content: center; gap: 1rem; flex-wrap: wrap; }
+    .social-link {
+      display: flex; align-items: center; gap: 8px;
+      padding: 0.7rem 1.25rem;
+      border: 1px solid var(--border); border-radius: 100px;
+      color: var(--muted); text-decoration: none; font-size: 0.85rem;
+      transition: color 0.2s, border-color 0.2s;
+    }
+    .social-link:hover { color: var(--text); border-color: rgba(255,255,255,0.25); }
+    .social-link svg { width: 16px; height: 16px; }
+
+    /* === FOOTER === */
+    footer {
+      text-align: center; padding: 2rem;
+      font-size: 0.78rem; color: var(--muted);
+      border-top: 1px solid var(--border);
+      font-family: 'DM Mono', monospace;
+    }
+
+    /* === RESPONSIVE === */
+    @media (max-width: 640px) {
+      nav ul { display: none; }
+      nav { padding: 1rem 1.25rem; }
+      section { padding: 4rem 1.25rem; }
+      .contact-box { padding: 2.5rem 1.5rem; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- NAV -->
+  <nav>
+    <div class="nav-logo">axel<span>.</span>dev</div>
+    <ul>
+      <li><a href="#om-mig">Om mig</a></li>
+      <li><a href="#projekt">Projekt</a></li>
+      <li><a href="#erfarenhet">Erfarenhet</a></li>
+      <li><a href="#kontakt">Kontakt</a></li>
+    </ul>
+  </nav>
+
+  <!-- HERO -->
+  <div class="hero">
+    <div class="hero-bg"></div>
+    <div class="hero-grid"></div>
+    <div class="hero-inner">
+      <div class="hero-tag">
+        <span class="dot"></span>
+        Tillgänglig för nya projekt
+      </div>
+      <h1>
+        Hej, jag är
+        <span class="line-highlight">Axel Staaf Friborg</span>
+      </h1>
+      <p class="hero-desc">
+        Javautvecklare med fokus på backend-utveckling.
+      </p>
+      <div class="hero-ctas">
+        <a href="#projekt" class="btn btn-primary">Se mina projekt</a>
+        <a href="#kontakt" class="btn btn-ghost">Kontakta mig</a>
+      </div>
+    </div>
+    <div class="hero-scroll">
+      <span>Scrolla</span>
+      <div class="scroll-line"></div>
+    </div>
+  </div>
+
+  <hr class="divider" />
+
+  <!-- SKILLS -->
+  <section id="om-mig">
+    <div class="section-label">// kompetenser</div>
+    <h2 class="section-title">Vad jag kan</h2>
+    <div class="skills-grid">
+
+      <div class="skill-card">
+        <div class="skill-icon" style="background:rgba(6,214,160,0.12);">⚙️</div>
+        <h3>Backend</h3>
+        <div class="skill-tags">
+          <span class="tag">Java</span>
+          <span class="tag">Spring Boot</span>
+          <span class="tag">MySQL</span>
+          <span class="tag">PostgreSQL</span>
+          <span class="tag">REST</span>
+        </div>
+      </div>
+
+      <div class="skill-card">
+        <div class="skill-icon" style="background:rgba(123,47,190,0.12);">☁️</div>
+        <h3>DevOps & moln</h3>
+        <div class="skill-tags">
+          <span class="tag">Docker</span>
+          <span class="tag">GitHub Actions</span>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <hr class="divider" />
+
+  <!-- PROJECTS -->
+  <section id="projekt">
+    <div class="section-label">// arbeten</div>
+    <h2 class="section-title">Utvalda projekt</h2>
+    <div class="projects-grid">
+
+      <a href="https://github.com/axsty/TaskManager" class="project-card">
+        <h3>Task Manager</h3>
+        <p>Ett REST‑API för att hantera uppgifter i en task manager‑applikation.</p>
+        <div class="project-meta">
+          <span class="project-lang">
+            <span class="lang-dot" style="background:#3178C6"></span>TypeScript
+          </span>
+          <span class="project-link">
+            GitHub
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M7 17L17 7M17 7H7M17 7v10"/></svg>
+          </span>
+        </div>
+      </a>
+
+    </div>
+  </section>
+
+  <hr class="divider" />
+
+  <!-- EXPERIENCE -->
+  <section id="erfarenhet">
+    <div class="section-label">// historik</div>
+    <h2 class="section-title">Erfarenhet</h2>
+    <div class="timeline">
+
+      <div class="timeline-item">
+        <div class="timeline-dot"></div>
+        <div class="timeline-year">2025 — nu</div>
+        <h3>Javautvecklare</h3>
+        <div class="place">IT-Högskolan · Stockholm</div>
+      </div>
+
+      <div class="timeline-item">
+        <div class="timeline-dot" style="background:var(--c3); box-shadow:0 0 0 3px var(--bg),0 0 0 4px var(--c3)"></div>
+        <div class="timeline-year" style="color:var(--c3)">2023 — 2025</div>
+        <h3>Säljledare</h3>
+        <div class="place">ICA Maxi · Värmdö</div>
+        <p>Säljledare över resturangavdelningen i butiken. Helhetsansvar för
+den dagliga driften och ansvar för teamet på avdelningen. Några
+uppgifter som ingick i rollen var beställning, kvalitet, egenkontroll
+& prissättning. Planera och hålla avdelningsmöten. Introducera och
+utveckla medarbetare. Driva försäljning och följa upp nyckeltal.</p>
+      </div>
+
+      <div class="timeline-item">
+        <div class="timeline-dot" style="background:var(--c2); box-shadow:0 0 0 3px var(--bg),0 0 0 4px var(--c2)"></div>
+        <div class="timeline-year" style="color:var(--c2)">2018 — nu</div>
+        <h3>Medarbetare</h3>
+        <div class="place">ICA Maxi · Värmdö</div>
+      </div>
+
+    </div>
+  </section>
+
+  <hr class="divider" />
+
+  <!-- CONTACT -->
+  <section id="kontakt">
+    <div class="contact-box">
+      <h2>Låt oss bygga<br />något tillsammans</h2>
+      <p>Jag är alltid intresserad av nya möjligheter och spännande projekt.</p>
+      <a href="mailto:axelstaaffriborg@gmail.com" class="btn btn-primary" style="margin-bottom:2rem; display:inline-flex;">
+        Skicka ett mail
+      </a>
+      <div class="social-links">
+        <a href="https://github.com/axsty" class="social-link">
+          <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.477 2 2 6.484 2 12.017c0 4.425 2.865 8.18 6.839 9.504.5.092.682-.217.682-.483 0-.237-.008-.868-.013-1.703-2.782.605-3.369-1.343-3.369-1.343-.454-1.158-1.11-1.466-1.11-1.466-.908-.62.069-.608.069-.608 1.003.07 1.531 1.032 1.531 1.032.892 1.53 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.988 1.029-2.688-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0112 6.844c.85.004 1.705.115 2.504.337 1.909-1.296 2.747-1.027 2.747-1.027.546 1.379.202 2.398.1 2.651.64.7 1.028 1.595 1.028 2.688 0 3.848-2.339 4.695-4.566 4.942.359.31.678.921.678 1.856 0 1.338-.012 2.419-.012 2.747 0 .268.18.58.688.482A10.019 10.019 0 0022 12.017C22 6.484 17.522 2 12 2z"/></svg>
+          GitHub
+        </a>
+        <a href="https://linkedin.com/in/axelstaaffriborg" class="social-link">
+          <svg viewBox="0 0 24 24" fill="currentColor"><path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433a2.062 2.062 0 01-2.063-2.065 2.064 2.064 0 112.063 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/></svg>
+          LinkedIn
+        </a>
+        <a href="/cv.pdf" class="social-link">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+          Ladda ned CV
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <footer>
+    <span>Byggd med HTML · Axel Staaf Friborg · 2025</span>
+  </footer>
+
+</body>
+</html>
